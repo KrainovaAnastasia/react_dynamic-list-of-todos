@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 
@@ -41,16 +41,19 @@ export const App: React.FC = () => {
     return response.json();
   };
 
-  const handleSelectTodo = (todo: Todo) => {
-    setSelectedTodo(todo);
-    setIsUserLoading(true);
-    setUser(null);
+  const handleSelectTodo = useCallback(
+    (todo: Todo) => {
+      setSelectedTodo(todo);
+      setIsUserLoading(true);
+      setUser(null);
 
-    getUser(todo.userId)
-      .then(setUser)
-      .catch(() => setError('Failed to load user'))
-      .finally(() => setTimeout(() => setIsUserLoading(false), 2000));
-  };
+      getUser(todo.userId)
+        .then(setUser)
+        .catch(() => setError('Failed to load user'))
+        .finally(() => setTimeout(() => setIsUserLoading(false), 2000));
+    },
+    [getUser, setSelectedTodo, setIsUserLoading, setUser, setError],
+  );
 
   const filterTodos = todos.filter(todo => {
     const matchesFilter =
@@ -58,7 +61,9 @@ export const App: React.FC = () => {
       (filter === 'active' && !todo.completed) ||
       (filter === 'completed' && todo.completed);
 
-    const matchesSearch = todo.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = todo.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
 
     return matchesFilter && matchesSearch;
   });

@@ -52,7 +52,7 @@ export const TodoList: React.FC<Props> = ({
               </p>
             </td>
             <td className="has-text-right is-vcentered">
-            {selectedTodo?.id !== todo.id ? (
+              {selectedTodo?.id !== todo.id ? (
                 <button
                   data-cy="selectButton"
                   className="button"
